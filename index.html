@@ -605,6 +605,9 @@
             grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
             gap: 0.75rem;
             margin: 1.25rem 0;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding: 2px;
         }
 
         .squishy-tile {
@@ -944,8 +947,8 @@
         }
 
         function generatePlus() {
-            const a = rand(10, 499);
-            const b = rand(10, 499);
+            const a = rand(10, 99);
+            const b = rand(10, 99);
             const result = a + b;
 
             currentProblem.type = 'plus';
@@ -953,17 +956,18 @@
             currentProblem.answer = result;
 
             const places = ['ener', 'tiere', 'hundreder', 'tusinder'];
-            const aStr = String(a).padStart(3, '0');
-            const bStr = String(b).padStart(3, '0');
+            const len = Math.max(String(a).length, String(b).length);
+            const aStr = String(a).padStart(len, '0');
+            const bStr = String(b).padStart(len, '0');
             let carry = 0;
             const steps = [`Læg <kbd>${a}</kbd> og <kbd>${b}</kbd> sammen — start med enerne (fra højre) 🐾`];
-            for (let i = 2; i >= 0; i--) {
+            for (let i = len - 1; i >= 0; i--) {
                 const da = parseInt(aStr.charAt(i));
                 const db = parseInt(bStr.charAt(i));
                 const sum = da + db + carry;
                 const digit = sum % 10;
                 const newCarry = Math.floor(sum / 10);
-                const place = places[2 - i];
+                const place = places[len - 1 - i];
                 let line = `${place.charAt(0).toUpperCase() + place.slice(1)}: <kbd>${da}</kbd> + <kbd>${db}</kbd>`;
                 if (carry > 0) line += ` + <kbd>${carry}</kbd> (i mente)`;
                 line += ` = <kbd>${sum}</kbd> — skriv <kbd>${digit}</kbd>`;
@@ -979,8 +983,8 @@
         function generateMinus() {
             let a, b;
             do {
-                a = rand(100, 999);
-                b = rand(10, 999);
+                a = rand(20, 99);
+                b = rand(10, 99);
             } while (a <= b);
 
             const result = a - b;
@@ -1508,7 +1512,7 @@
                 };
                 grid.appendChild(tile);
             });
-            const slots = squishies.length < 8 ? 8 : squishies.length + 4;
+            const slots = Math.max(12, squishies.length + 8);
             for (let i = squishies.length; i < slots; i++) {
                 const tile = document.createElement('div');
                 tile.className = 'squishy-tile empty';

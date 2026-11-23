@@ -33,7 +33,7 @@ python3 -m http.server 8000
 
 Fire moduler, du skifter mellem øverst:
 
-- 🔢 **Tal** — plus og minus med 2-3-cifrede tal (med tier-overgang/mente), den lille gangetabel (2–10), division inden for gangetabellen
+- 🔢 **Tal** — plus og minus med 2-cifrede tal under 100 (med tier-overgang/mente), den lille gangetabel (2–10), division inden for gangetabellen
 - 📐 **Geometri** — areal og omkreds af rektangel og kvadrat, omkreds af trekant (med nuttede figurer, der får kawaii-ansigter)
 - 📏 **Enheder** — omregning mellem km/m/cm/mm, kg/g/t og L/dL/mL med pæne tal
 - 🍰 **Brøker** — plus/minus med samme nævner, brøk ganget med heltal, forkortning
@@ -42,7 +42,7 @@ Hver opgave har en **trin-for-trin-løsning** (💡 Vis løsning), svar-tjek (�
 
 ## Præmier: squishy-samling 🧸
 
-Efter hver **5. rigtige svar** får eleven en præmie: en tilfældig squishy (bamse, kanin, kat, frø eller panda) i en flot pastel-farve med et sødt kawaii-ansigt. Eleven trykker på squishy'en, og den laver en **squish-animation** (den bliver klemt rundt) — bagefter flyver den ind i **squishy-samlingen**. Tryk på 🧸-knappen nede til venstre for at se alle de squishys, eleven har vundet (man kan også klemme dem der). Fremskridt til næste præmie vises med ⭐ ved siden af knappen. Samlingen gemmes i browseren (localStorage), så den bliver hængende mellem sessioner.
+Efter hver **5. rigtige svar** får eleven en præmie: en tilfældig squishy (bamse, kanin, kat, frø eller panda) i en flot pastel-farve med et sødt kawaii-ansigt. Eleven trykker på squishy'en, og den laver en **squish-animation** (den bliver klemt rundt) — bagefter flyver den ind i **squishy-samlingen**. Tryk på 🧸-knappen nede til venstre for at se alle de squishys, eleven har vundet (man kan også klemme dem der). Samlingen vokser med flere tomme pladser over tid, og hvis der bliver rigtig mange, kan man scrolle i kortet. Fremskridt til næste præmie vises med ⭐ ved siden af knappen. Samlingen gemmes i browseren (localStorage), så den bliver hængende mellem sessioner.
 
 Tastatur: `ENTER` tjekker svaret, `R` giver en ny opgave.
 
