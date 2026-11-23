@@ -494,6 +494,148 @@
             padding: 0.2rem 0.5rem;
         }
 
+        .prize-progress {
+            position: fixed;
+            left: 20px;
+            bottom: 86px;
+            z-index: 40;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.75);
+            border: 3px solid var(--pink-soft);
+            border-radius: 999px;
+            padding: 0.3rem 0.95rem;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--plum);
+            box-shadow: 3px 4px 0 rgba(107, 78, 113, 0.15);
+        }
+
+        .collection-btn {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 40;
+            background: var(--lav);
+            color: var(--plum);
+        }
+
+        .collection-count {
+            background: var(--pink);
+            color: #fff;
+            border: 2px solid var(--plum);
+            border-radius: 999px;
+            padding: 0 0.55rem;
+            margin-left: 0.3rem;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            background: rgba(107, 78, 113, 0.35);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .overlay.visible { display: flex; animation: pop 0.2s ease; }
+
+        .prize-card, .collection-card {
+            background: var(--cream);
+            border: 4px solid var(--plum);
+            border-radius: 30px;
+            box-shadow: 8px 10px 0 var(--pink-soft);
+            padding: 1.75rem 2rem;
+            text-align: center;
+        }
+
+        .prize-card { max-width: 430px; }
+        .collection-card { max-width: 540px; width: 100%; max-height: 85vh; overflow-y: auto; }
+
+        .prize-title, .collection-title {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: #E0568F;
+        }
+
+        .prize-sub {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 500;
+            color: var(--plum);
+            margin-top: 0.4rem;
+        }
+
+        .prize-squishy {
+            width: 190px;
+            height: 190px;
+            margin: 1.1rem auto 0.6rem;
+            cursor: pointer;
+            --tx: 0px;
+            --ty: 0px;
+        }
+
+        .prize-squishy svg { width: 100%; height: 100%; filter: drop-shadow(4px 6px 0 rgba(107, 78, 113, 0.2)); }
+        .prize-squishy.squishing { animation: squishAnim 0.45s ease-in-out 3; }
+
+        .prize-squishy.fly {
+            transition: transform 0.7s ease-in, opacity 0.7s ease-in;
+            transform: translate(var(--tx), var(--ty)) scale(0.12) rotate(360deg);
+            opacity: 0;
+        }
+
+        @keyframes squishAnim {
+            0% { transform: scale(1, 1) rotate(0deg); }
+            20% { transform: scale(1.3, 0.62) rotate(-7deg); }
+            40% { transform: scale(0.72, 1.28) rotate(6deg); }
+            60% { transform: scale(1.22, 0.78) rotate(-5deg); }
+            80% { transform: scale(0.88, 1.14) rotate(4deg); }
+            100% { transform: scale(1, 1) rotate(0deg); }
+        }
+
+        .prize-hint {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--plum);
+            opacity: 0.8;
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+            gap: 0.75rem;
+            margin: 1.25rem 0;
+        }
+
+        .squishy-tile {
+            background: #fff;
+            border: 3px solid var(--pink-soft);
+            border-radius: 20px;
+            padding: 0.5rem;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+
+        .squishy-tile:hover { transform: scale(1.07) rotate(-2deg); }
+        .squishy-tile.squishing { animation: squishAnim 0.45s ease-in-out 2; }
+        .squishy-tile svg { width: 100%; height: auto; }
+        .squishy-tile.empty {
+            background: rgba(255, 255, 255, 0.4);
+            border-style: dashed;
+            color: var(--pink);
+            font-size: 1.6rem;
+            cursor: default;
+        }
+
+        .collection-actions { display: flex; justify-content: center; }
+
         @media (max-width: 640px) {
             h1 { font-size: 1.7rem; }
             .mascot-wrap { right: 12px; bottom: 12px; padding: 6px; }
@@ -505,6 +647,9 @@
             .stats { grid-template-columns: repeat(2, 1fr); }
             .math-card { padding: 1.25rem; }
             .figure svg { width: 180px; }
+            .prize-progress { left: 12px; bottom: 66px; font-size: 0.78rem; }
+            .collection-btn { left: 12px; bottom: 12px; }
+            .prize-squishy { width: 150px; height: 150px; }
         }
     </style>
 </head>
@@ -554,6 +699,9 @@
         </svg>
     </div>
 
+    <div class="prize-progress" id="prize-progress"></div>
+    <button id="collection-btn" class="collection-btn" onclick="openCollection()">🧸 Squishy-samling <span id="collection-count" class="collection-count">0</span></button>
+
     <div class="container">
         <header>
             <span class="sparkle" style="top: 0; left: 20%; font-size: 1.4rem;">✦</span>
@@ -601,6 +749,23 @@
         <p class="hint"><kbd>ENTER</kbd> tjek svar &nbsp;&nbsp; <kbd>R</kbd> ny opgave</p>
     </div>
 
+    <div id="prize-overlay" class="overlay">
+        <div class="prize-card">
+            <div class="prize-title">🎉 Tillykke!</div>
+            <div class="prize-sub" id="prize-sub"></div>
+            <div id="prize-squishy" class="prize-squishy" onclick="squishPrize()"></div>
+            <div class="prize-hint" id="prize-hint">Tryk på squishy'en for at klemme den 🥰</div>
+        </div>
+    </div>
+
+    <div id="collection-overlay" class="overlay">
+        <div class="collection-card">
+            <div class="collection-title">🧸 Din squishy-samling</div>
+            <div id="collection-grid" class="collection-grid"></div>
+            <div class="collection-actions"><button class="btn-primary" onclick="closeCollection()">Luk ✨</button></div>
+        </div>
+    </div>
+
     <script>
         let activeModule = 'tal';
 
@@ -619,6 +784,10 @@
             figure: '',
             steps: []
         };
+
+        let correctTotal = 0;
+        let squishies = [];
+        let currentPrize = null;
 
         const problemTypes = [
             { type: 'plus', weight: 25 },
@@ -694,7 +863,10 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
+            loadState();
             renderStats();
+            updatePrizeProgress();
+            updateCollectionUI();
             generateProblem();
         });
 
@@ -1165,6 +1337,10 @@
                 stats[activeModule].total++;
                 stats[activeModule][currentProblem.type]++;
                 renderStats();
+                correctTotal++;
+                saveState();
+                updatePrizeProgress();
+                if (correctTotal % 5 === 0) setTimeout(awardSquishy, 650);
             } else {
                 setMascot('sad');
                 setTimeout(() => setMascot('idle'), 900);
@@ -1192,7 +1368,161 @@
             });
         }
 
+        function loadState() {
+            try {
+                correctTotal = parseInt(localStorage.getItem('kawaiiCorrectTotal'), 10) || 0;
+                const raw = JSON.parse(localStorage.getItem('kawaiiSquishies') || '[]');
+                squishies = Array.isArray(raw) ? raw : [];
+            } catch (e) {
+                correctTotal = 0;
+                squishies = [];
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('kawaiiCorrectTotal', String(correctTotal));
+                localStorage.setItem('kawaiiSquishies', JSON.stringify(squishies));
+            } catch (e) {}
+        }
+
+        const squishyTypes = [
+            { id: 'bamse', label: 'Bamse', ears: 'round' },
+            { id: 'kanin', label: 'Kanin', ears: 'long' },
+            { id: 'kat', label: 'Kat', ears: 'pointy' },
+            { id: 'frø', label: 'Frø', ears: 'bumps' },
+            { id: 'panda', label: 'Panda', ears: 'round', panda: true }
+        ];
+
+        const squishyColors = ['#FF9EC7', '#C9B8FF', '#9BE8C8', '#9CD2FF', '#FFD08A', '#FFA98A', '#F2A8E8', '#A8DFF0', '#FFC9A8', '#CDEFA8'];
+
+        function squishySVG(t, color) {
+            let ears = '';
+            if (t.ears === 'round') {
+                const earFill = t.panda ? '#6B4E71' : color;
+                ears = `<circle cx="36" cy="34" r="15" fill="${earFill}" stroke="#6B4E71" stroke-width="4"/>`
+                     + `<circle cx="84" cy="34" r="15" fill="${earFill}" stroke="#6B4E71" stroke-width="4"/>`
+                     + (t.panda ? '' : `<circle cx="36" cy="34" r="7" fill="#FFD3E5"/><circle cx="84" cy="34" r="7" fill="#FFD3E5"/>`);
+            } else if (t.ears === 'long') {
+                ears = `<ellipse cx="42" cy="20" rx="9" ry="21" fill="${color}" stroke="#6B4E71" stroke-width="4" transform="rotate(-12 42 20)"/>`
+                     + `<ellipse cx="78" cy="20" rx="9" ry="21" fill="${color}" stroke="#6B4E71" stroke-width="4" transform="rotate(12 78 20)"/>`
+                     + `<ellipse cx="43" cy="23" rx="4" ry="12" fill="#FFD3E5" transform="rotate(-12 43 23)"/>`
+                     + `<ellipse cx="77" cy="23" rx="4" ry="12" fill="#FFD3E5" transform="rotate(12 77 23)"/>`;
+            } else if (t.ears === 'pointy') {
+                ears = `<polygon points="28,46 40,16 53,41" fill="${color}" stroke="#6B4E71" stroke-width="4" stroke-linejoin="round"/>`
+                     + `<polygon points="67,41 80,16 92,46" fill="${color}" stroke="#6B4E71" stroke-width="4" stroke-linejoin="round"/>`
+                     + `<polygon points="35,39 40,27 48,37" fill="#FFD3E5"/>`
+                     + `<polygon points="72,37 80,27 85,39" fill="#FFD3E5"/>`;
+            } else {
+                ears = `<circle cx="42" cy="31" r="9" fill="${color}" stroke="#6B4E71" stroke-width="4"/>`
+                     + `<circle cx="78" cy="31" r="9" fill="${color}" stroke="#6B4E71" stroke-width="4"/>`;
+            }
+            const bodyFill = t.panda ? '#FFFDF8' : color;
+            const patch = t.panda
+                ? `<ellipse cx="46" cy="63" rx="9" ry="11" fill="#6B4E71" transform="rotate(-15 46 63)"/><ellipse cx="74" cy="63" rx="9" ry="11" fill="#6B4E71" transform="rotate(15 74 63)"/>`
+                : '';
+            const eyes = t.panda
+                ? `<circle cx="46" cy="63" r="3.5" fill="#fff"/><circle cx="74" cy="63" r="3.5" fill="#fff"/>`
+                : `<path d="M40 63 q6 -8 12 0" stroke="#6B4E71" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M68 63 q6 -8 12 0" stroke="#6B4E71" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+            return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">`
+                + ears
+                + `<ellipse cx="60" cy="73" rx="42" ry="38" fill="${bodyFill}" stroke="#6B4E71" stroke-width="4"/>`
+                + patch + eyes
+                + `<ellipse cx="35" cy="75" rx="6" ry="4" fill="#FF8FB5" opacity="0.85"/><ellipse cx="85" cy="75" rx="6" ry="4" fill="#FF8FB5" opacity="0.85"/>`
+                + `<path d="M50 77 q10 12 20 0 q-10 5 -20 0 z" fill="#8A4B6B"/><ellipse cx="60" cy="81" rx="5" ry="2.6" fill="#FF8FB5"/>`
+                + `</svg>`;
+        }
+
+        function updatePrizeProgress() {
+            const pending = document.getElementById('prize-overlay').classList.contains('visible');
+            const done = pending ? 5 : correctTotal % 5;
+            document.getElementById('prize-progress').textContent = `⭐ ${'★'.repeat(done)}${'☆'.repeat(5 - done)} til næste squishy`;
+        }
+
+        function updateCollectionUI() {
+            document.getElementById('collection-count').textContent = squishies.length;
+        }
+
+        function awardSquishy() {
+            const t = squishyTypes[Math.floor(Math.random() * squishyTypes.length)];
+            const color = squishyColors[Math.floor(Math.random() * squishyColors.length)];
+            currentPrize = { type: t.id, label: t.label, color: color };
+            const el = document.getElementById('prize-squishy');
+            el.className = 'prize-squishy';
+            el.innerHTML = squishySVG(t, color);
+            document.getElementById('prize-sub').textContent = `${correctTotal} rigtige svar — her er en ${t.label.toLowerCase()} i en flot farve! 🐾`;
+            document.getElementById('prize-hint').textContent = "Tryk på squishy'en for at klemme den 🥰";
+            document.getElementById('prize-overlay').classList.add('visible');
+            updatePrizeProgress();
+        }
+
+        function closePrize() {
+            document.getElementById('prize-overlay').classList.remove('visible');
+            currentPrize = null;
+            updatePrizeProgress();
+        }
+
+        function squishPrize() {
+            const el = document.getElementById('prize-squishy');
+            if (!currentPrize || el.classList.contains('squishing') || el.classList.contains('fly')) return;
+            el.classList.add('squishing');
+            spawnBurst();
+            document.getElementById('prize-hint').textContent = 'Squiish! 🥰';
+            setTimeout(() => {
+                el.classList.remove('squishing');
+                const btn = document.getElementById('collection-btn').getBoundingClientRect();
+                const r = el.getBoundingClientRect();
+                el.style.setProperty('--tx', (btn.left + btn.width / 2 - (r.left + r.width / 2)) + 'px');
+                el.style.setProperty('--ty', (btn.top + btn.height / 2 - (r.top + r.height / 2)) + 'px');
+                void el.offsetWidth;
+                el.classList.add('fly');
+                setTimeout(() => {
+                    squishies.push(currentPrize);
+                    saveState();
+                    closePrize();
+                    updateCollectionUI();
+                }, 750);
+            }, 1400);
+        }
+
+        function openCollection() {
+            renderCollection();
+            document.getElementById('collection-overlay').classList.add('visible');
+        }
+
+        function closeCollection() {
+            document.getElementById('collection-overlay').classList.remove('visible');
+        }
+
+        function renderCollection() {
+            const grid = document.getElementById('collection-grid');
+            grid.innerHTML = '';
+            grid.children.length = 0;
+            squishies.forEach((s) => {
+                const tile = document.createElement('div');
+                tile.className = 'squishy-tile';
+                tile.title = s.label || 'Squishy';
+                const t = squishyTypes.find((x) => x.id === s.type) || squishyTypes[0];
+                tile.innerHTML = squishySVG(t, s.color || '#FF9EC7');
+                tile.onclick = () => {
+                    tile.classList.remove('squishing');
+                    void tile.offsetWidth;
+                    tile.classList.add('squishing');
+                };
+                grid.appendChild(tile);
+            });
+            const slots = squishies.length < 8 ? 8 : squishies.length + 4;
+            for (let i = squishies.length; i < slots; i++) {
+                const tile = document.createElement('div');
+                tile.className = 'squishy-tile empty';
+                tile.textContent = '❔';
+                grid.appendChild(tile);
+            }
+        }
+
         document.addEventListener('keydown', (e) => {
+            if (document.getElementById('prize-overlay').classList.contains('visible') ||
+                document.getElementById('collection-overlay').classList.contains('visible')) return;
             if (e.target && e.target.id === 'answer-input') {
                 if (e.key === 'Enter') {
                     checkAnswer();
