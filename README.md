@@ -44,7 +44,7 @@ Hver opgave har en **trin-for-trin-løsning** (💡 Vis løsning), svar-tjek (�
 
 Efter hver **5. rigtige svar** får eleven en præmie: en tilfældig squishy (bamse, kanin, kat, frø eller panda) i en flot pastel-farve med et sødt kawaii-ansigt. Eleven trykker på squishy'en, og den laver en **squish-animation** (den bliver klemt rundt) — bagefter flyver den ind i **squishy-samlingen**. Tryk på 🧸-knappen nede til venstre for at se alle de squishys, eleven har vundet (man kan også klemme dem der). Samlingen vokser med flere tomme pladser over tid, og hvis der bliver rigtig mange, kan man scrolle i kortet. Fremskridt til næste præmie vises med ⭐ ved siden af knappen. Samlingen gemmes i browseren (localStorage), så den bliver hængende mellem sessioner.
 
-Tastatur: `ENTER` tjekker svaret, `R` giver en ny opgave.
+Tastatur: `ENTER` tjekker svaret — tryk `ENTER` igen efter et rigtigt svar for med det samme at få et nyt stykke (ingen ventetid); `R` giver også en ny opgave med det samme.
 
 ## Teknik
 

@@ -746,7 +746,7 @@
 
         <div class="stats" id="stats"></div>
 
-        <p class="hint"><kbd>ENTER</kbd> tjek svar &nbsp;&nbsp; <kbd>R</kbd> ny opgave</p>
+        <p class="hint"><kbd>ENTER</kbd> tjek svar — tryk igen for nyt stykke &nbsp;&nbsp; <kbd>R</kbd> ny opgave</p>
     </div>
 
     <div id="prize-overlay" class="overlay">
@@ -1313,7 +1313,10 @@
 
         function checkAnswer() {
             const input = document.getElementById('answer-input');
-            if (input.disabled) return;
+            if (input.disabled) {
+                generateProblem();
+                return;
+            }
             const guess = parseAnswer(input.value);
             if (isNaN(guess)) {
                 setMascot('sad');
@@ -1341,7 +1344,7 @@
                 correctTotal++;
                 saveState();
                 updatePrizeProgress();
-                if (correctTotal % 5 === 0) setTimeout(awardSquishy, 650);
+                if (correctTotal % 5 === 0) awardSquishy();
             } else {
                 setMascot('sad');
                 setTimeout(() => setMascot('idle'), 900);
