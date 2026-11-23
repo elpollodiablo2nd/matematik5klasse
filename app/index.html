@@ -91,13 +91,22 @@
         }
 
         .mascot-wrap {
-            position: relative;
-            display: inline-block;
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 40;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.55);
+            border: 3px solid var(--pink-soft);
+            border-radius: 50%;
+            padding: 8px;
+            opacity: 0.92;
+            box-shadow: 4px 6px 0 rgba(107, 78, 113, 0.15);
         }
 
         .mascot {
-            width: 118px;
-            height: 118px;
+            width: 84px;
+            height: 84px;
             filter: drop-shadow(4px 5px 0 rgba(107, 78, 113, 0.25));
             animation: bob 2.2s ease-in-out infinite;
         }
@@ -487,7 +496,8 @@
 
         @media (max-width: 640px) {
             h1 { font-size: 1.7rem; }
-            .mascot { width: 92px; height: 92px; }
+            .mascot-wrap { right: 12px; bottom: 12px; padding: 6px; }
+            .mascot { width: 64px; height: 64px; }
             .math-expression { font-size: 1.9rem; }
             .buttons { flex-direction: column; }
             .answer-row { flex-direction: column; }
@@ -512,43 +522,44 @@
     <span class="bg-emoji" style="top: 8%; left: 46%; font-size: 1.5rem;">✨</span>
     <span class="bg-emoji" style="top: 82%; left: 45%; font-size: 1.7rem;">🍼</span>
 
+    <div class="mascot-wrap" id="mascot-wrap">
+        <svg class="mascot" id="mascot" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Squishy bamse-maskot">
+            <circle cx="32" cy="28" r="17" fill="#FFD3E5" stroke="#6B4E71" stroke-width="4"/>
+            <circle cx="88" cy="28" r="17" fill="#FFD3E5" stroke="#6B4E71" stroke-width="4"/>
+            <circle cx="32" cy="28" r="8" fill="#FF9EC7"/>
+            <circle cx="88" cy="28" r="8" fill="#FF9EC7"/>
+            <circle cx="60" cy="66" r="43" fill="#FFE9F3" stroke="#6B4E71" stroke-width="4"/>
+            <g class="eyes-open">
+                <circle cx="46" cy="60" r="5" fill="#6B4E71"/>
+                <circle cx="74" cy="60" r="5" fill="#6B4E71"/>
+                <circle cx="48" cy="58" r="1.7" fill="#fff"/>
+                <circle cx="76" cy="58" r="1.7" fill="#fff"/>
+            </g>
+            <g class="eyes-happy" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round">
+                <path d="M39 61 q7 -9 14 0"/>
+                <path d="M67 61 q7 -9 14 0"/>
+            </g>
+            <g class="eyes-sad" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round">
+                <path d="M39 57 q7 8 14 0"/>
+                <path d="M67 57 q7 8 14 0"/>
+            </g>
+            <ellipse cx="36" cy="72" rx="6.5" ry="4.2" fill="#FFB3D1"/>
+            <ellipse cx="84" cy="72" rx="6.5" ry="4.2" fill="#FFB3D1"/>
+            <path class="mouth-smile" d="M51 76 q9 9 18 0" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+            <g class="mouth-open">
+                <path d="M49 74 q11 17 22 0 q-11 7 -22 0 z" fill="#8A4B6B"/>
+                <ellipse cx="60" cy="81" rx="6" ry="3.2" fill="#FF8FB5"/>
+            </g>
+            <path class="mouth-wah" d="M50 80 q5 -6 10 0 q5 6 10 0" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        </svg>
+    </div>
+
     <div class="container">
         <header>
             <span class="sparkle" style="top: 0; left: 20%; font-size: 1.4rem;">✦</span>
             <span class="sparkle" style="top: 24px; right: 20%; font-size: 1.1rem; animation-delay: 0.4s;">✦</span>
             <span class="sparkle" style="top: 70px; left: 10%; font-size: 1rem; animation-delay: 0.8s; color: var(--lav-deep);">✦</span>
             <span class="sparkle" style="top: 80px; right: 11%; font-size: 1.3rem; animation-delay: 1.2s; color: var(--blue-deep);">✦</span>
-            <div class="mascot-wrap" id="mascot-wrap">
-                <svg class="mascot" id="mascot" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Squishy bamse-maskot">
-                    <circle cx="32" cy="28" r="17" fill="#FFD3E5" stroke="#6B4E71" stroke-width="4"/>
-                    <circle cx="88" cy="28" r="17" fill="#FFD3E5" stroke="#6B4E71" stroke-width="4"/>
-                    <circle cx="32" cy="28" r="8" fill="#FF9EC7"/>
-                    <circle cx="88" cy="28" r="8" fill="#FF9EC7"/>
-                    <circle cx="60" cy="66" r="43" fill="#FFE9F3" stroke="#6B4E71" stroke-width="4"/>
-                    <g class="eyes-open">
-                        <circle cx="46" cy="60" r="5" fill="#6B4E71"/>
-                        <circle cx="74" cy="60" r="5" fill="#6B4E71"/>
-                        <circle cx="48" cy="58" r="1.7" fill="#fff"/>
-                        <circle cx="76" cy="58" r="1.7" fill="#fff"/>
-                    </g>
-                    <g class="eyes-happy" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round">
-                        <path d="M39 61 q7 -9 14 0"/>
-                        <path d="M67 61 q7 -9 14 0"/>
-                    </g>
-                    <g class="eyes-sad" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round">
-                        <path d="M39 57 q7 8 14 0"/>
-                        <path d="M67 57 q7 8 14 0"/>
-                    </g>
-                    <ellipse cx="36" cy="72" rx="6.5" ry="4.2" fill="#FFB3D1"/>
-                    <ellipse cx="84" cy="72" rx="6.5" ry="4.2" fill="#FFB3D1"/>
-                    <path class="mouth-smile" d="M51 76 q9 9 18 0" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-                    <g class="mouth-open">
-                        <path d="M49 74 q11 17 22 0 q-11 7 -22 0 z" fill="#8A4B6B"/>
-                        <ellipse cx="60" cy="81" rx="6" ry="3.2" fill="#FF8FB5"/>
-                    </g>
-                    <path class="mouth-wah" d="M50 80 q5 -6 10 0 q5 6 10 0" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-                </svg>
-            </div>
             <h1>MATH AID</h1>
             <p class="subtitle">Øvelse på 4./5. klasse-niveau · Kawaii-udgaven 🐻🍓</p>
         </header>
@@ -876,7 +887,7 @@
             currentProblem.answer = wantAreal ? l * b : 2 * (l + b);
             const w = 40 + l * 9;
             const h = 26 + b * 7;
-            currentProblem.figure = `<svg viewBox="0 0 210 130"><rect x="35" y="25" width="${w}" height="${h}" rx="14" fill="#CDE7FF" stroke="#6B4E71" stroke-width="4"/><text x="${35 + w / 2 - 14}" y="17" class="fig-label">l = ${l}</text><text x="${35 + w + 6}" y="${25 + h / 2 + 6}" class="fig-label">b = ${b}</text>${faceSVG(35 + w / 2, 25 + h / 2 - 4, 1)}</svg>`;
+            currentProblem.figure = `<svg viewBox="0 0 210 130"><rect x="35" y="25" width="${w}" height="${h}" rx="14" fill="#CDE7FF" stroke="#6B4E71" stroke-width="4"/><text x="${35 + w / 2 - 14}" y="17" class="fig-label">l = ${l}</text><text x="${35 + w - 10}" y="${25 + h - 8}" text-anchor="end" class="fig-label">b = ${b}</text>${faceSVG(35 + w / 2, 25 + h / 2 - 8, 1)}</svg>`;
             currentProblem.steps = wantAreal ? [
                 `Vi skal finde arealet af rektanglet med længde <kbd>l = ${l}</kbd> og bredde <kbd>b = ${b}</kbd> 🐻`,
                 `Formel: <kbd>A = l · b</kbd>`,
@@ -897,7 +908,9 @@
             currentProblem.problem = wantAreal ? 'A = ?' : 'O = ?';
             currentProblem.answer = wantAreal ? s * s : 4 * s;
             const w = 34 + s * 8;
-            currentProblem.figure = `<svg viewBox="0 0 210 130"><rect x="${(210 - w) / 2}" y="${(120 - w) / 2 + 5}" width="${w}" height="${w}" rx="14" fill="#E6D9FF" stroke="#6B4E71" stroke-width="4"/><text x="${(210 - w) / 2 + w / 2 - 16}" y="${(120 - w) / 2 - 4}" class="fig-label">s = ${s}</text><text x="${(210 - w) / 2 + w + 6}" y="${(120 - w) / 2 + w / 2 + 6}" class="fig-label">s = ${s}</text>${faceSVG(105, 65, 1)}</svg>`;
+            const x = (210 - w) / 2;
+            const y = (150 - w) / 2;
+            currentProblem.figure = `<svg viewBox="0 0 210 150"><rect x="${x}" y="${y}" width="${w}" height="${w}" rx="14" fill="#E6D9FF" stroke="#6B4E71" stroke-width="4"/><text x="${x + w / 2 - 16}" y="${y - 6}" class="fig-label">s = ${s}</text><text x="${x + w - 10}" y="${y + w / 2 + 6}" text-anchor="end" class="fig-label">s = ${s}</text>${faceSVG(105, y + w / 2 - 7, 1)}</svg>`;
             currentProblem.steps = wantAreal ? [
                 `Vi skal finde arealet af kvadratet med sidelængde <kbd>s = ${s}</kbd> 🐰`,
                 `Formel: <kbd>A = s · s = s²</kbd>`,
@@ -938,7 +951,7 @@
             vaegt: [
                 { fra: 'kg', til: 'g', faktor: 1000, vmin: 1, vmax: 9, note: '1 kg = 1000 g' },
                 { fra: 't', til: 'kg', faktor: 1000, vmin: 1, vmax: 3, note: '1 t = 1000 kg' },
-                { fra: 'g', til: 'kg', faktor: 0.001, vmin: 2, vmax: 9, big: 100, note: '1000 g = 1 kg' }
+                { fra: 'g', til: 'kg', faktor: 0.001, vmin: 2, vmax: 9, big: 1000, step: 100, note: '1000 g = 1 kg' }
             ],
             volumen: [
                 { fra: 'L', til: 'dL', faktor: 10, vmin: 2, vmax: 9, note: '1 L = 10 dL' },
@@ -952,7 +965,8 @@
             currentProblem.type = type;
             const table = enhedTables[type];
             const conv = table[Math.floor(Math.random() * table.length)];
-            const v = conv.big ? rand(conv.vmin, conv.vmax) * conv.big : rand(conv.vmin, conv.vmax);
+            const step = conv.step || conv.big || 1;
+            const v = step > 1 ? rand(conv.vmin, conv.vmax) * step : rand(conv.vmin, conv.vmax);
             currentProblem.answer = conv.faktor >= 1 ? v * conv.faktor : round2(v / conv.big);
             currentProblem.answerText = `${formatNumber(currentProblem.answer)} ${conv.til}`;
             currentProblem.problem = `Omregn ${formatNumber(v)} ${conv.fra} til ${conv.til} = ?`;
