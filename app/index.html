@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Aid · Kawaii-udgaven — App</title>
+    <meta name="theme-color" content="#FF8FC7">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐻%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --plum: #6B4E71;
+            --ink: #5B3A5E;
+            --pink: #FF8FC7;
+            --pink-soft: #FFD3E5;
+            --pink-bg: #FFE9F3;
+            --lav: #C9B8FF;
+            --lav-deep: #9B7EE8;
+            --mint: #A8E6CF;
+            --mint-deep: #4FBF95;
+            --blue: #A8D8FF;
+            --blue-deep: #4FA8E8;
+            --sun: #FFE08A;
+            --cream: #FFFDF8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Baloo 2', 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(160deg, #FFE3F0 0%, #EFE6FF 45%, #DFF7EC 100%);
+            background-attachment: fixed;
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem 3rem;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.55) 3px, transparent 3.5px);
+            background-size: 30px 30px;
+            z-index: 0;
+        }
+
+        .bg-emoji {
+            position: fixed;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+            opacity: 0.55;
+            filter: saturate(1.1);
+            animation: floaty 7s ease-in-out infinite alternate;
+        }
+
+        .bg-emoji:nth-child(odd) { animation-duration: 9s; animation-delay: -2s; }
+        .bg-emoji:nth-child(3n) { animation-duration: 6s; animation-delay: -4s; }
+        .bg-emoji:nth-child(4n) { animation-duration: 10s; animation-delay: -1s; }
+
+        @keyframes floaty {
+            from { transform: translateY(0) rotate(-6deg); }
+            to { transform: translateY(-22px) rotate(8deg); }
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.75rem;
+            position: relative;
+        }
+
+        .mascot-wrap {
+            position: relative;
+            display: inline-block;
+        }
+
+        .mascot {
+            width: 118px;
+            height: 118px;
+            filter: drop-shadow(4px 5px 0 rgba(107, 78, 113, 0.25));
+            animation: bob 2.2s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+            0%, 100% { transform: translateY(0) scale(1, 1); }
+            30% { transform: translateY(-9px) scale(0.97, 1.03); }
+            60% { transform: translateY(0) scale(1.04, 0.95); }
+        }
+
+        .mascot .eyes-happy, .mascot .eyes-sad, .mascot .mouth-open, .mascot .mouth-wah { display: none; }
+        .mascot.state-happy .eyes-open, .mascot.state-happy .mouth-smile { display: none; }
+        .mascot.state-happy .eyes-happy, .mascot.state-happy .mouth-open { display: block; }
+        .mascot.state-sad .eyes-open, .mascot.state-sad .mouth-smile { display: none; }
+        .mascot.state-sad .eyes-sad, .mascot.state-sad .mouth-wah { display: block; }
+
+        .float-heart {
+            position: absolute;
+            bottom: 90%;
+            font-size: 1.3rem;
+            pointer-events: none;
+            animation: floatUp 1.3s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.6) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(-90px) scale(1.3) rotate(20deg); }
+        }
+
+        h1 {
+            font-family: 'Fredoka', 'Baloo 2', sans-serif;
+            font-weight: 700;
+            font-size: 2.6rem;
+            margin-top: 0.9rem;
+            letter-spacing: 2px;
+            background: linear-gradient(180deg, #FF6FA5 0%, #B06FE0 55%, #6FA8FF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(2px 3px 0 rgba(107, 78, 113, 0.25));
+        }
+
+        @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+            h1 { color: var(--pink); background: none; }
+        }
+
+        .subtitle {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 500;
+            font-size: 1.15rem;
+            color: var(--plum);
+            margin-top: 0.5rem;
+            background: rgba(255, 255, 255, 0.65);
+            display: inline-block;
+            padding: 0.3rem 1.1rem;
+            border-radius: 999px;
+            border: 3px solid var(--pink-soft);
+        }
+
+        .sparkle {
+            position: absolute;
+            color: var(--pink);
+            animation: twinkle 1.6s ease-in-out infinite;
+            user-select: none;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.35; transform: scale(0.7) rotate(25deg); }
+        }
+
+        .module-switch {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-btn {
+            background: var(--cream);
+            color: var(--plum);
+        }
+
+        .module-btn.active {
+            background: linear-gradient(180deg, var(--pink) 0%, #FF6FA5 100%);
+            color: #fff;
+            border-color: var(--plum);
+        }
+
+        .math-card {
+            background: var(--cream);
+            border: 4px solid var(--plum);
+            border-radius: 30px;
+            box-shadow: 8px 10px 0 var(--pink-soft);
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .type-badge {
+            display: inline-block;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.45rem 1.1rem;
+            margin-bottom: 1.25rem;
+            background: var(--pink-soft);
+            color: var(--plum);
+            border: 3px solid var(--plum);
+            border-radius: 999px;
+            box-shadow: 3px 4px 0 rgba(107, 78, 113, 0.25);
+        }
+
+        #type-badge[data-type="plus"] { background: var(--pink-soft); }
+        #type-badge[data-type="minus"] { background: var(--lav); }
+        #type-badge[data-type="gange"] { background: var(--sun); }
+        #type-badge[data-type="dividere"] { background: var(--blue); }
+        #type-badge[data-type="rektangel"] { background: var(--blue); }
+        #type-badge[data-type="kvadrat"] { background: var(--lav); }
+        #type-badge[data-type="trekant"] { background: var(--sun); }
+        #type-badge[data-type="laengde"] { background: var(--blue); }
+        #type-badge[data-type="vaegt"] { background: var(--sun); }
+        #type-badge[data-type="volumen"] { background: var(--mint); }
+        #type-badge[data-type="bplus"] { background: var(--pink-soft); }
+        #type-badge[data-type="bminus"] { background: var(--lav); }
+        #type-badge[data-type="bgange"] { background: var(--sun); }
+        #type-badge[data-type="forenkl"] { background: var(--mint); }
+
+        .problem-display {
+            padding: 1.5rem;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+            background: #fff;
+            border: 4px dashed var(--pink);
+            border-radius: 24px;
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-display.boing {
+            animation: boing 0.45s ease;
+        }
+
+        @keyframes boing {
+            0% { transform: scale(1); }
+            35% { transform: scale(1.04, 0.94); }
+            70% { transform: scale(0.98, 1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .figure { display: none; }
+        .figure.visible { display: block; animation: boing 0.45s ease; }
+        .figure svg { width: 220px; height: auto; }
+
+        .fig-label {
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            fill: var(--plum);
+        }
+
+        .math-expression {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 2.6rem;
+            color: var(--lav-deep);
+            text-shadow: 2px 3px 0 var(--pink-soft);
+        }
+
+        .cursor {
+            display: inline-block;
+            margin-left: 10px;
+            color: var(--pink);
+            font-size: 1.9rem;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; transform: translateY(-3px); }
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 4px solid var(--plum);
+            border-radius: 999px;
+            box-shadow: 0 6px 0 var(--plum);
+            cursor: pointer;
+            transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s;
+        }
+
+        button:hover {
+            filter: brightness(1.06);
+            transform: translateY(-2px) rotate(-1deg);
+            box-shadow: 0 8px 0 var(--plum);
+            animation: wiggle 0.35s ease;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: translateY(-2px) rotate(-1deg); }
+            50% { transform: translateY(-2px) rotate(2deg); }
+        }
+
+        button:active {
+            transform: translateY(5px) scale(0.97);
+            box-shadow: 0 1px 0 var(--plum);
+        }
+
+        .btn-primary { background: linear-gradient(180deg, var(--pink), #FF6FA5); color: #fff; }
+        .btn-refresh { background: var(--lav); color: var(--plum); }
+
+        .answer-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        #answer-input {
+            flex: 1;
+            min-width: 0;
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            padding: 0.55rem 1.2rem;
+            background: #fff;
+            color: var(--ink);
+            border: 4px solid var(--plum);
+            border-radius: 20px;
+            outline: none;
+            transition: box-shadow 0.15s, border-color 0.15s;
+        }
+
+        #answer-input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 5px var(--pink-soft);
+        }
+
+        #answer-input:disabled { background: #F3ECF7; }
+
+        .btn-check {
+            background: linear-gradient(180deg, var(--mint), #7EDCB4);
+            color: #234d3a;
+            white-space: nowrap;
+        }
+
+        .feedback {
+            display: none;
+            margin-bottom: 1.25rem;
+            padding: 0.9rem 1.3rem;
+            border: 4px solid var(--plum);
+            border-radius: 20px;
+            box-shadow: 4px 5px 0 rgba(107, 78, 113, 0.25);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .feedback.visible { display: block; animation: pop 0.2s ease; }
+
+        .feedback.correct { background: #DFF9EC; color: #1F7A4D; }
+        .feedback.wrong { background: #FFE3EC; color: #C2426B; animation: shake 0.3s ease; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-7px); }
+            75% { transform: translateX(7px); }
+        }
+
+        @keyframes pop {
+            from { transform: scale(0.9); }
+            to { transform: scale(1); }
+        }
+
+        .solution {
+            display: none;
+            margin-top: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            background: #FFF6DC;
+            border: 4px solid var(--plum);
+            border-radius: 22px;
+            box-shadow: inset 0 0 0 3px #FFE9A8;
+        }
+
+        .solution.visible { display: block; animation: pop 0.2s ease; }
+
+        .solution-title {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #B07A1E;
+            margin-bottom: 0.9rem;
+        }
+
+        .solution-steps { font-size: 1.15rem; font-weight: 600; line-height: 1.65; }
+
+        .solution-steps kbd {
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            background: var(--plum);
+            color: #FFE9F3;
+            padding: 0.05rem 0.55rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 0.55rem;
+            padding-left: 1.5rem;
+        }
+
+        .step::before {
+            content: "🌸";
+            position: absolute;
+            left: 0;
+            font-size: 0.9rem;
+            top: 0.2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.55);
+            border: 4px solid var(--plum);
+            border-radius: 24px;
+            box-shadow: 6px 8px 0 var(--pink-soft);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.6rem 0.25rem;
+            background: var(--cream);
+            border: 3px solid var(--pink-soft);
+            border-radius: 18px;
+        }
+
+        .stat-value {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 0.2rem;
+            color: var(--plum);
+        }
+
+        .hint {
+            margin-top: 1.25rem;
+            text-align: center;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--plum);
+            opacity: 0.85;
+        }
+
+        .hint kbd {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.8rem;
+            background: var(--plum);
+            color: #FFE9F3;
+            border-radius: 8px;
+            padding: 0.2rem 0.5rem;
+        }
+
+        @media (max-width: 640px) {
+            h1 { font-size: 1.7rem; }
+            .mascot { width: 92px; height: 92px; }
+            .math-expression { font-size: 1.9rem; }
+            .buttons { flex-direction: column; }
+            .answer-row { flex-direction: column; }
+            button { width: 100%; justify-content: center; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .math-card { padding: 1.25rem; }
+            .figure svg { width: 180px; }
+        }
+    </style>
+</head>
+<body>
+    <span class="bg-emoji" style="top: 6%; left: 5%; font-size: 2.6rem;">🐻</span>
+    <span class="bg-emoji" style="top: 14%; right: 7%; font-size: 2.2rem;">🐰</span>
+    <span class="bg-emoji" style="top: 42%; left: 3%; font-size: 2rem;">🦊</span>
+    <span class="bg-emoji" style="top: 38%; right: 4%; font-size: 2.6rem;">🐼</span>
+    <span class="bg-emoji" style="top: 68%; left: 6%; font-size: 2.3rem;">🐸</span>
+    <span class="bg-emoji" style="top: 72%; right: 6%; font-size: 2rem;">🦄</span>
+    <span class="bg-emoji" style="top: 88%; left: 12%; font-size: 2.2rem;">🍓</span>
+    <span class="bg-emoji" style="top: 90%; right: 12%; font-size: 2.4rem;">🧁</span>
+    <span class="bg-emoji" style="top: 26%; left: 12%; font-size: 1.7rem;">🍬</span>
+    <span class="bg-emoji" style="top: 55%; right: 13%; font-size: 1.6rem;">⭐</span>
+    <span class="bg-emoji" style="top: 8%; left: 46%; font-size: 1.5rem;">✨</span>
+    <span class="bg-emoji" style="top: 82%; left: 45%; font-size: 1.7rem;">🍼</span>
+
+    <div class="container">
+        <header>
+            <span class="sparkle" style="top: 0; left: 20%; font-size: 1.4rem;">✦</span>
+            <span class="sparkle" style="top: 24px; right: 20%; font-size: 1.1rem; animation-delay: 0.4s;">✦</span>
+            <span class="sparkle" style="top: 70px; left: 10%; font-size: 1rem; animation-delay: 0.8s; color: var(--lav-deep);">✦</span>
+            <span class="sparkle" style="top: 80px; right: 11%; font-size: 1.3rem; animation-delay: 1.2s; color: var(--blue-deep);">✦</span>
+            <div class="mascot-wrap" id="mascot-wrap">
+                <svg class="mascot" id="mascot" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Squishy bamse-maskot">
+                    <circle cx="32" cy="28" r="17" fill="#FFD3E5" stroke="#6B4E71" stroke-width="4"/>
+                    <circle cx="88" cy="28" r="17" fill="#FFD3E5" stroke="#6B4E71" stroke-width="4"/>
+                    <circle cx="32" cy="28" r="8" fill="#FF9EC7"/>
+                    <circle cx="88" cy="28" r="8" fill="#FF9EC7"/>
+                    <circle cx="60" cy="66" r="43" fill="#FFE9F3" stroke="#6B4E71" stroke-width="4"/>
+                    <g class="eyes-open">
+                        <circle cx="46" cy="60" r="5" fill="#6B4E71"/>
+                        <circle cx="74" cy="60" r="5" fill="#6B4E71"/>
+                        <circle cx="48" cy="58" r="1.7" fill="#fff"/>
+                        <circle cx="76" cy="58" r="1.7" fill="#fff"/>
+                    </g>
+                    <g class="eyes-happy" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round">
+                        <path d="M39 61 q7 -9 14 0"/>
+                        <path d="M67 61 q7 -9 14 0"/>
+                    </g>
+                    <g class="eyes-sad" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round">
+                        <path d="M39 57 q7 8 14 0"/>
+                        <path d="M67 57 q7 8 14 0"/>
+                    </g>
+                    <ellipse cx="36" cy="72" rx="6.5" ry="4.2" fill="#FFB3D1"/>
+                    <ellipse cx="84" cy="72" rx="6.5" ry="4.2" fill="#FFB3D1"/>
+                    <path class="mouth-smile" d="M51 76 q9 9 18 0" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                    <g class="mouth-open">
+                        <path d="M49 74 q11 17 22 0 q-11 7 -22 0 z" fill="#8A4B6B"/>
+                        <ellipse cx="60" cy="81" rx="6" ry="3.2" fill="#FF8FB5"/>
+                    </g>
+                    <path class="mouth-wah" d="M50 80 q5 -6 10 0 q5 6 10 0" stroke="#6B4E71" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h1>MATH AID</h1>
+            <p class="subtitle">Øvelse på 4./5. klasse-niveau · Kawaii-udgaven 🐻🍓</p>
+        </header>
+
+        <div class="module-switch">
+            <button id="mod-tal" class="module-btn active" onclick="setModule('tal')">🔢 TAL</button>
+            <button id="mod-geometri" class="module-btn" onclick="setModule('geometri')">📐 GEOMETRI</button>
+            <button id="mod-enheder" class="module-btn" onclick="setModule('enheder')">📏 ENHEDER</button>
+            <button id="mod-brok" class="module-btn" onclick="setModule('brok')">🍰 BRØKER</button>
+        </div>
+
+        <div class="math-card">
+            <div id="type-badge" class="type-badge" data-type="plus"></div>
+            <div class="problem-display" id="problem-display">
+                <div id="figure" class="figure"></div>
+                <div class="expr-line"><span id="problem" class="math-expression"></span><span class="cursor">♥</span></div>
+            </div>
+
+            <div class="answer-row">
+                <input id="answer-input" type="text" inputmode="decimal" placeholder="Dit svar (fx 12 eller 3/4)..." autocomplete="off">
+                <button id="check-answer" class="btn-check" onclick="checkAnswer()">✅ Tjek svar</button>
+            </div>
+
+            <div id="answer-feedback" class="feedback"></div>
+
+            <div class="buttons">
+                <button id="show-solution" class="btn-primary" onclick="showSolution()">💡 Vis løsning</button>
+                <button class="btn-refresh" onclick="generateProblem()">🔄 Ny opgave</button>
+            </div>
+
+            <div id="solution" class="solution">
+                <div class="solution-title">Trin for trin 🌈</div>
+                <div id="solution-steps" class="solution-steps"></div>
+            </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <p class="hint"><kbd>ENTER</kbd> tjek svar &nbsp;&nbsp; <kbd>R</kbd> ny opgave</p>
+    </div>
+
+    <script>
+        let activeModule = 'tal';
+
+        let stats = {
+            tal: { total: 0, plus: 0, minus: 0, gange: 0, dividere: 0 },
+            geometri: { total: 0, rektangel: 0, kvadrat: 0, trekant: 0 },
+            enheder: { total: 0, laengde: 0, vaegt: 0, volumen: 0 },
+            brok: { total: 0, bplus: 0, bminus: 0, bgange: 0, forenkl: 0 }
+        };
+
+        let currentProblem = {
+            type: '',
+            problem: '',
+            answer: 0,
+            answerText: '',
+            figure: '',
+            steps: []
+        };
+
+        const problemTypes = [
+            { type: 'plus', weight: 25 },
+            { type: 'minus', weight: 25 },
+            { type: 'gange', weight: 25 },
+            { type: 'dividere', weight: 25 }
+        ];
+
+        const geometryTypes = [
+            { type: 'rektangel', weight: 35 },
+            { type: 'kvadrat', weight: 35 },
+            { type: 'trekant', weight: 30 }
+        ];
+
+        const enhederTypes = [
+            { type: 'laengde', weight: 35 },
+            { type: 'vaegt', weight: 30 },
+            { type: 'volumen', weight: 35 }
+        ];
+
+        const brokTypes = [
+            { type: 'bplus', weight: 30 },
+            { type: 'bminus', weight: 25 },
+            { type: 'bgange', weight: 25 },
+            { type: 'forenkl', weight: 20 }
+        ];
+
+        const typeNames = {
+            plus: '➕ Plus',
+            minus: '➖ Minus',
+            gange: '✖️ Gange',
+            dividere: '➗ Division',
+            rektangel: '🟦 Rektangel',
+            kvadrat: '🟪 Kvadrat',
+            trekant: '🔺 Trekant',
+            laengde: '📏 Længde',
+            vaegt: '⚖️ Vægt',
+            volumen: '🥤 Volumen',
+            bplus: '🍰 Brøk plus',
+            bminus: '🍰 Brøk minus',
+            bgange: '🍰 Brøk gange',
+            forenkl: '✂️ Forkort brøk'
+        };
+
+        const moduleTypes = {
+            tal: problemTypes,
+            geometri: geometryTypes,
+            enheder: enhederTypes,
+            brok: brokTypes
+        };
+
+        const statConfig = {
+            tal: {
+                keys: ['total', 'plus', 'minus', 'gange', 'dividere'],
+                labels: ['Opgaver løst 🌟', 'Plus', 'Minus', 'Gange', 'Division'],
+                colors: ['#FF6FA5', '#FF6FA5', '#9B7EE8', '#F5A83D', '#4FA8E8']
+            },
+            geometri: {
+                keys: ['total', 'rektangel', 'kvadrat', 'trekant'],
+                labels: ['Opgaver løst 🌟', 'Rektangler', 'Kvadrater', 'Trekanter'],
+                colors: ['#FF6FA5', '#4FA8E8', '#9B7EE8', '#F5A83D']
+            },
+            enheder: {
+                keys: ['total', 'laengde', 'vaegt', 'volumen'],
+                labels: ['Opgaver løst 🌟', 'Længde', 'Vægt', 'Volumen'],
+                colors: ['#FF6FA5', '#4FA8E8', '#F5A83D', '#4FBF95']
+            },
+            brok: {
+                keys: ['total', 'bplus', 'bminus', 'bgange', 'forenkl'],
+                labels: ['Opgaver løst 🌟', 'Plus', 'Minus', 'Gange', 'Forkort'],
+                colors: ['#FF6FA5', '#FF6FA5', '#9B7EE8', '#F5A83D', '#4FBF95']
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStats();
+            generateProblem();
+        });
+
+        function setModule(m) {
+            activeModule = m;
+            for (const mod of ['tal', 'geometri', 'enheder', 'brok']) {
+                document.getElementById('mod-' + mod).classList.toggle('active', mod === m);
+            }
+            renderStats();
+            generateProblem();
+        }
+
+        function rand(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateProblem() {
+            document.getElementById('solution').classList.remove('visible');
+            document.getElementById('show-solution').textContent = '💡 Vis løsning';
+            currentProblem.figure = '';
+            currentProblem.answerText = '';
+            setMascot('idle');
+
+            const types = moduleTypes[activeModule];
+            const totalWeight = types.reduce((sum, p) => sum + p.weight, 0);
+            let random = Math.random() * totalWeight;
+            let selectedType = types[0].type;
+
+            for (const pt of types) {
+                if (random < pt.weight) {
+                    selectedType = pt.type;
+                    break;
+                }
+                random -= pt.weight;
+            }
+
+            switch (selectedType) {
+                case 'plus': generatePlus(); break;
+                case 'minus': generateMinus(); break;
+                case 'gange': generateGange(); break;
+                case 'dividere': generateDividere(); break;
+                case 'rektangel': generateRektangel(); break;
+                case 'kvadrat': generateKvadrat(); break;
+                case 'trekant': generateTrekant(); break;
+                case 'laengde': generateEnhed('laengde'); break;
+                case 'vaegt': generateEnhed('vaegt'); break;
+                case 'volumen': generateEnhed('volumen'); break;
+                case 'bplus': generateBrok('bplus'); break;
+                case 'bminus': generateBrok('bminus'); break;
+                case 'bgange': generateBrok('bgange'); break;
+                case 'forenkl': generateBrok('forenkl'); break;
+            }
+
+            document.getElementById('problem').textContent = currentProblem.problem;
+            const badge = document.getElementById('type-badge');
+            badge.textContent = typeNames[selectedType];
+            badge.dataset.type = selectedType;
+
+            const figure = document.getElementById('figure');
+            if (currentProblem.figure) {
+                figure.innerHTML = currentProblem.figure;
+                figure.classList.add('visible');
+            } else {
+                figure.innerHTML = '';
+                figure.classList.remove('visible');
+            }
+
+            const pd = document.getElementById('problem-display');
+            pd.classList.remove('boing');
+            void pd.offsetWidth;
+            pd.classList.add('boing');
+
+            const input = document.getElementById('answer-input');
+            input.value = '';
+            input.disabled = false;
+            input.focus();
+            document.getElementById('answer-feedback').className = 'feedback';
+        }
+
+        function generatePlus() {
+            const a = rand(10, 499);
+            const b = rand(10, 499);
+            const result = a + b;
+
+            currentProblem.type = 'plus';
+            currentProblem.problem = `${a} + ${b}`;
+            currentProblem.answer = result;
+
+            const places = ['ener', 'tiere', 'hundreder', 'tusinder'];
+            const aStr = String(a).padStart(3, '0');
+            const bStr = String(b).padStart(3, '0');
+            let carry = 0;
+            const steps = [`Læg <kbd>${a}</kbd> og <kbd>${b}</kbd> sammen — start med enerne (fra højre) 🐾`];
+            for (let i = 2; i >= 0; i--) {
+                const da = parseInt(aStr.charAt(i));
+                const db = parseInt(bStr.charAt(i));
+                const sum = da + db + carry;
+                const digit = sum % 10;
+                const newCarry = Math.floor(sum / 10);
+                const place = places[2 - i];
+                let line = `${place.charAt(0).toUpperCase() + place.slice(1)}: <kbd>${da}</kbd> + <kbd>${db}</kbd>`;
+                if (carry > 0) line += ` + <kbd>${carry}</kbd> (i mente)`;
+                line += ` = <kbd>${sum}</kbd> — skriv <kbd>${digit}</kbd>`;
+                if (newCarry > 0) line += `, før <kbd>${newCarry}</kbd> videre`;
+                steps.push(line);
+                carry = newCarry;
+            }
+            if (carry > 0) steps.push(`Husk den sidste mente: <kbd>${carry}</kbd> forrest 🎀`);
+            steps.push(`Slutresultat: <kbd>${a} + ${b} = ${result}</kbd> 🌟`);
+            currentProblem.steps = steps;
+        }
+
+        function generateMinus() {
+            let a, b;
+            do {
+                a = rand(100, 999);
+                b = rand(10, 999);
+            } while (a <= b);
+
+            const result = a - b;
+
+            currentProblem.type = 'minus';
+            currentProblem.problem = `${a} - ${b}`;
+            currentProblem.answer = result;
+
+            const aOnes = a % 10;
+            const bOnes = b % 10;
+            const borrowHint = aOnes < bOnes
+                ? `Enerne: <kbd>${aOnes}</kbd> er mindre end <kbd>${bOnes}</kbd> — så låner vi 1 tier (10 enere) først 😉`
+                : `Enerne: <kbd>${aOnes}</kbd> - <kbd>${bOnes}</kbd> går fint uden at låne ✨`;
+
+            currentProblem.steps = [
+                `Træk <kbd>${b}</kbd> fra <kbd>${a}</kbd> 🐾`,
+                borrowHint,
+                `Tjek bagefter: <kbd>${result} + ${b} = ${a}</kbd> — det passer! ✅`,
+                `Slutresultat: <kbd>${a} - ${b} = ${result}</kbd> 🌟`
+            ];
+        }
+
+        function generateGange() {
+            const a = rand(2, 10);
+            const b = rand(2, 10);
+            const result = a * b;
+
+            currentProblem.type = 'gange';
+            currentProblem.problem = `${a} × ${b}`;
+            currentProblem.answer = result;
+
+            const repeated = Array(a).fill(String(b)).join(' + ');
+
+            currentProblem.steps = [
+                `Gangetabellet! 💪 Tænk på det som <kbd>${a}</kbd> grupper med <kbd>${b}</kbd> i hver:`,
+                `<kbd>${repeated} = ${result}</kbd>`,
+                `Slutresultat: <kbd>${a} × ${b} = ${result}</kbd> 🌟`
+            ];
+        }
+
+        function generateDividere() {
+            const b = rand(2, 10);
+            const q = rand(2, 10);
+            const a = b * q;
+
+            currentProblem.type = 'dividere';
+            currentProblem.problem = `${a} ÷ ${b}`;
+            currentProblem.answer = q;
+
+            currentProblem.steps = [
+                `Hvor mange gange går <kbd>${b}</kbd> op i <kbd>${a}</kbd>? 🤔`,
+                `Prøv dig frem: <kbd>${b} × ${q} = ${a}</kbd> — det passer! ✅`,
+                `Slutresultat: <kbd>${a} ÷ ${b} = ${q}</kbd> 🌟`
+            ];
+        }
+
+        function faceSVG(cx, cy, s) {
+            return `<g>`
+                + `<circle cx="${cx - 8 * s}" cy="${cy}" r="${2.4 * s}" fill="#6B4E71"/>`
+                + `<circle cx="${cx + 8 * s}" cy="${cy}" r="${2.4 * s}" fill="#6B4E71"/>`
+                + `<path d="M ${cx - 4 * s} ${cy + 6 * s} q ${4 * s} ${4.5 * s} ${8 * s} 0" stroke="#6B4E71" stroke-width="${2.6 * s}" fill="none" stroke-linecap="round"/>`
+                + `<ellipse cx="${cx - 14 * s}" cy="${cy + 5 * s}" rx="${3.6 * s}" ry="${2.3 * s}" fill="#FF9EC7" opacity="0.85"/>`
+                + `<ellipse cx="${cx + 14 * s}" cy="${cy + 5 * s}" rx="${3.6 * s}" ry="${2.3 * s}" fill="#FF9EC7" opacity="0.85"/>`
+                + `</g>`;
+        }
+
+        function generateRektangel() {
+            currentProblem.type = 'rektangel';
+            const l = rand(3, 12);
+            const b = rand(2, 10);
+            const wantAreal = Math.random() < 0.5;
+            currentProblem.problem = wantAreal ? 'A = ?' : 'O = ?';
+            currentProblem.answer = wantAreal ? l * b : 2 * (l + b);
+            const w = 40 + l * 9;
+            const h = 26 + b * 7;
+            currentProblem.figure = `<svg viewBox="0 0 210 130"><rect x="35" y="25" width="${w}" height="${h}" rx="14" fill="#CDE7FF" stroke="#6B4E71" stroke-width="4"/><text x="${35 + w / 2 - 14}" y="17" class="fig-label">l = ${l}</text><text x="${35 + w + 6}" y="${25 + h / 2 + 6}" class="fig-label">b = ${b}</text>${faceSVG(35 + w / 2, 25 + h / 2 - 4, 1)}</svg>`;
+            currentProblem.steps = wantAreal ? [
+                `Vi skal finde arealet af rektanglet med længde <kbd>l = ${l}</kbd> og bredde <kbd>b = ${b}</kbd> 🐻`,
+                `Formel: <kbd>A = l · b</kbd>`,
+                `Indsæt: <kbd>A = ${l} · ${b} = ${l * b}</kbd>`,
+                `Slutresultat: <kbd>A = ${l * b}</kbd> 🌟`
+            ] : [
+                `Vi skal finde omkredsen af rektanglet med længde <kbd>l = ${l}</kbd> og bredde <kbd>b = ${b}</kbd> 🐻`,
+                `Formel: <kbd>O = 2 · (l + b)</kbd> — alle fire sider lagt sammen`,
+                `Indsæt: <kbd>O = 2 · (${l} + ${b}) = 2 · ${l + b} = ${2 * (l + b)}</kbd>`,
+                `Slutresultat: <kbd>O = ${2 * (l + b)}</kbd> 🌟`
+            ];
+        }
+
+        function generateKvadrat() {
+            currentProblem.type = 'kvadrat';
+            const s = rand(2, 10);
+            const wantAreal = Math.random() < 0.5;
+            currentProblem.problem = wantAreal ? 'A = ?' : 'O = ?';
+            currentProblem.answer = wantAreal ? s * s : 4 * s;
+            const w = 34 + s * 8;
+            currentProblem.figure = `<svg viewBox="0 0 210 130"><rect x="${(210 - w) / 2}" y="${(120 - w) / 2 + 5}" width="${w}" height="${w}" rx="14" fill="#E6D9FF" stroke="#6B4E71" stroke-width="4"/><text x="${(210 - w) / 2 + w / 2 - 16}" y="${(120 - w) / 2 - 4}" class="fig-label">s = ${s}</text><text x="${(210 - w) / 2 + w + 6}" y="${(120 - w) / 2 + w / 2 + 6}" class="fig-label">s = ${s}</text>${faceSVG(105, 65, 1)}</svg>`;
+            currentProblem.steps = wantAreal ? [
+                `Vi skal finde arealet af kvadratet med sidelængde <kbd>s = ${s}</kbd> 🐰`,
+                `Formel: <kbd>A = s · s = s²</kbd>`,
+                `Indsæt: <kbd>A = ${s} · ${s} = ${s * s}</kbd>`,
+                `Slutresultat: <kbd>A = ${s * s}</kbd> 🌟`
+            ] : [
+                `Vi skal finde omkredsen af kvadratet med sidelængde <kbd>s = ${s}</kbd> 🐰`,
+                `Formel: <kbd>O = 4 · s</kbd> — fire ens sider`,
+                `Indsæt: <kbd>O = 4 · ${s} = ${4 * s}</kbd>`,
+                `Slutresultat: <kbd>O = ${4 * s}</kbd> 🌟`
+            ];
+        }
+
+        function generateTrekant() {
+            currentProblem.type = 'trekant';
+            const a = rand(3, 12);
+            const b = rand(3, 12);
+            const c = rand(3, 12);
+            currentProblem.problem = 'O = ?';
+            currentProblem.answer = a + b + c;
+            currentProblem.figure = `<svg viewBox="0 0 210 130"><polygon points="50,95 160,95 105,25" fill="#FFE08A" stroke="#6B4E71" stroke-width="4" stroke-linejoin="round"/><text x="96" y="114" class="fig-label">c = ${c}</text><text x="18" y="62" class="fig-label">a = ${a}</text><text x="168" y="64" class="fig-label">b = ${b}</text>${faceSVG(105, 72, 1)}</svg>`;
+            currentProblem.steps = [
+                `Vi skal finde omkredsen af trekanten med siderne <kbd>a = ${a}</kbd>, <kbd>b = ${b}</kbd> og <kbd>c = ${c}</kbd> 🔺`,
+                `Formel: <kbd>O = a + b + c</kbd> — alle tre sider lagt sammen`,
+                `Indsæt: <kbd>O = ${a} + ${b} + ${c} = ${a + b + c}</kbd>`,
+                `Slutresultat: <kbd>O = ${a + b + c}</kbd> 🌟`
+            ];
+        }
+
+        const enhedTables = {
+            laengde: [
+                { fra: 'km', til: 'm', faktor: 1000, vmin: 1, vmax: 5, note: '1 km = 1000 m' },
+                { fra: 'm', til: 'cm', faktor: 100, vmin: 2, vmax: 9, note: '1 m = 100 cm' },
+                { fra: 'cm', til: 'mm', faktor: 10, vmin: 2, vmax: 9, note: '1 cm = 10 mm' },
+                { fra: 'cm', til: 'm', faktor: 0.01, vmin: 2, vmax: 9, big: 100, note: '100 cm = 1 m' },
+                { fra: 'mm', til: 'cm', faktor: 0.1, vmin: 2, vmax: 9, big: 10, note: '10 mm = 1 cm' }
+            ],
+            vaegt: [
+                { fra: 'kg', til: 'g', faktor: 1000, vmin: 1, vmax: 9, note: '1 kg = 1000 g' },
+                { fra: 't', til: 'kg', faktor: 1000, vmin: 1, vmax: 3, note: '1 t = 1000 kg' },
+                { fra: 'g', til: 'kg', faktor: 0.001, vmin: 2, vmax: 9, big: 100, note: '1000 g = 1 kg' }
+            ],
+            volumen: [
+                { fra: 'L', til: 'dL', faktor: 10, vmin: 2, vmax: 9, note: '1 L = 10 dL' },
+                { fra: 'dL', til: 'mL', faktor: 100, vmin: 2, vmax: 9, note: '1 dL = 100 mL' },
+                { fra: 'L', til: 'mL', faktor: 1000, vmin: 1, vmax: 5, note: '1 L = 1000 mL' },
+                { fra: 'dL', til: 'L', faktor: 0.1, vmin: 2, vmax: 9, big: 10, note: '10 dL = 1 L' }
+            ]
+        };
+
+        function generateEnhed(type) {
+            currentProblem.type = type;
+            const table = enhedTables[type];
+            const conv = table[Math.floor(Math.random() * table.length)];
+            const v = conv.big ? rand(conv.vmin, conv.vmax) * conv.big : rand(conv.vmin, conv.vmax);
+            currentProblem.answer = conv.faktor >= 1 ? v * conv.faktor : round2(v / conv.big);
+            currentProblem.answerText = `${formatNumber(currentProblem.answer)} ${conv.til}`;
+            currentProblem.problem = `Omregn ${formatNumber(v)} ${conv.fra} til ${conv.til} = ?`;
+            const op = conv.faktor >= 1 ? `· ${formatNumber(conv.faktor)}` : `: ${conv.big}`;
+            currentProblem.steps = [
+                `Vi skal omregne <kbd>${formatNumber(v)} ${conv.fra}</kbd> til <kbd>${conv.til}</kbd> 📏`,
+                `Husk: <kbd>${conv.note}</kbd> 💡`,
+                `Indsæt: <kbd>${formatNumber(v)} ${conv.fra} ${op} = ${formatNumber(currentProblem.answer)} ${conv.til}</kbd>`,
+                `Slutresultat: <kbd>${formatNumber(v)} ${conv.fra} = ${currentProblem.answerText}</kbd> 🌟`
+            ];
+        }
+
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b) {
+                const t = b;
+                b = a % b;
+                a = t;
+            }
+            return a;
+        }
+
+        function reduceFrac(n, d) {
+            const g = gcd(n, d) || 1;
+            return [n / g, d / g];
+        }
+
+        function brokText(n, d) {
+            return d === 1 ? String(n) : `${n}/${d}`;
+        }
+
+        function generateBrok(type) {
+            currentProblem.type = type;
+            if (type === 'bplus' || type === 'bminus') {
+                const c = rand(2, 10);
+                let a, b;
+                if (type === 'bminus') {
+                    a = rand(2, c);
+                    b = rand(1, a - 1);
+                } else {
+                    a = rand(1, c - 1);
+                    b = rand(1, c - 1);
+                }
+                const sum = type === 'bplus' ? a + b : a - b;
+                const [rn, rd] = reduceFrac(sum, c);
+                const tegn = type === 'bplus' ? '+' : '-';
+                currentProblem.problem = `${a}/${c} ${tegn} ${b}/${c} = ?`;
+                currentProblem.answer = sum / c;
+                currentProblem.answerText = brokText(rn, rd);
+                const intro = type === 'bplus'
+                    ? `Vi skal lægge brøkerne <kbd>${a}/${c}</kbd> og <kbd>${b}/${c}</kbd> sammen 🍰`
+                    : `Vi skal trække <kbd>${b}/${c}</kbd> fra <kbd>${a}/${c}</kbd> 🍰`;
+                const rule = type === 'bplus'
+                    ? `Nævnerne er ens <kbd>${c}</kbd> — behold nævneren og læg tællerne sammen:`
+                    : `Nævnerne er ens <kbd>${c}</kbd> — behold nævneren og træk tællerne fra hinanden:`;
+                const tæller = type === 'bplus' ? `${a} + ${b} = ${sum}` : `${a} - ${b} = ${sum}`;
+                currentProblem.steps = [
+                    intro,
+                    rule,
+                    `Indsæt: <kbd>${tæller}</kbd>`,
+                    `Indsæt: <kbd>${a}/${c} ${tegn} ${b}/${c} = ${sum}/${c}</kbd>`,
+                    ...(rn !== sum ? [`Forkort hvis det kan lade sig gøre: <kbd>${sum}/${c} = ${brokText(rn, rd)}</kbd>`] : []),
+                    `Slutresultat: <kbd>${a}/${c} ${tegn} ${b}/${c} = ${currentProblem.answerText}</kbd> 🌟`
+                ];
+            } else if (type === 'bgange') {
+                const a = rand(1, 5);
+                const b = rand(2, 8);
+                const k = rand(2, 5);
+                const pn = a * k;
+                const [rn, rd] = reduceFrac(pn, b);
+                currentProblem.problem = `${a}/${b} · ${k} = ?`;
+                currentProblem.answer = pn / b;
+                currentProblem.answerText = brokText(rn, rd);
+                currentProblem.steps = [
+                    `Vi skal gange brøken <kbd>${a}/${b}</kbd> med det hele tal <kbd>${k}</kbd> ✖️`,
+                    `Gang kun tælleren med tallet — nævneren bliver: <kbd>(${a} · ${k}) / ${b}</kbd>`,
+                    `Indsæt: <kbd>${a}/${b} · ${k} = ${pn}/${b}</kbd>`,
+                    ...(rn !== pn ? [`Forkort: <kbd>${pn}/${b} = ${brokText(rn, rd)}</kbd>`] : []),
+                    `Slutresultat: <kbd>${a}/${b} · ${k} = ${currentProblem.answerText}</kbd> 🌟`
+                ];
+            } else {
+                const k = rand(2, 5);
+                let rp, rq;
+                do {
+                    rp = rand(1, 7);
+                    rq = rand(2, 9);
+                } while (gcd(rp, rq) !== 1);
+                const a = k * rp;
+                const b = k * rq;
+                currentProblem.problem = `Forkort brøken ${a}/${b}`;
+                currentProblem.answer = rp / rq;
+                currentProblem.answerText = brokText(rp, rq);
+                currentProblem.steps = [
+                    `Vi skal forkorte brøken <kbd>${a}/${b}</kbd> ✂️`,
+                    `Find et tal, der går op i både tæller og nævner — det er <kbd>${k}</kbd>:`,
+                    `Del både tæller og nævner med ${k}: <kbd>${a} : ${k} = ${rp}</kbd> og <kbd>${b} : ${k} = ${rq}</kbd>`,
+                    `Slutresultat: <kbd>${a}/${b} = ${brokText(rp, rq)}</kbd> 🌟`
+                ];
+            }
+        }
+
+        function showSolution() {
+            const solutionDiv = document.getElementById('solution');
+            const solutionSteps = document.getElementById('solution-steps');
+            const showBtn = document.getElementById('show-solution');
+
+            if (solutionDiv.classList.contains('visible')) {
+                solutionDiv.classList.remove('visible');
+                showBtn.textContent = '💡 Vis løsning';
+            } else {
+                let stepsHtml = '';
+                currentProblem.steps.forEach((step) => {
+                    stepsHtml += `<div class="step">${step}</div>`;
+                });
+                solutionSteps.innerHTML = stepsHtml;
+                solutionDiv.classList.add('visible');
+                showBtn.textContent = '📖 Skjul løsning';
+            }
+        }
+
+        function formatNumber(n) {
+            return String(n).replace('.', ',');
+        }
+
+        function round2(n) {
+            return Math.round(n * 100) / 100;
+        }
+
+        function setMascot(state) {
+            const mascot = document.getElementById('mascot');
+            mascot.classList.remove('state-happy', 'state-sad');
+            if (state !== 'idle') mascot.classList.add('state-' + state);
+        }
+
+        function spawnBurst() {
+            const wrap = document.getElementById('mascot-wrap');
+            const emojis = ['💖', '⭐', '✨', '🍓', '💗', '🎀'];
+            for (let i = 0; i < 7; i++) {
+                const el = document.createElement('span');
+                el.className = 'float-heart';
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = (10 + Math.random() * 70) + '%';
+                el.style.animationDelay = (Math.random() * 0.25) + 's';
+                el.addEventListener('animationend', () => el.remove());
+                wrap.appendChild(el);
+            }
+        }
+
+        function showFeedback(ok, msg) {
+            const fb = document.getElementById('answer-feedback');
+            fb.classList.remove('visible', 'correct', 'wrong');
+            void fb.offsetWidth;
+            fb.textContent = msg;
+            fb.classList.add('visible', ok ? 'correct' : 'wrong');
+        }
+
+        function parseAnswer(raw) {
+            raw = raw.trim().replace(',', '.');
+            if (raw === '') return NaN;
+            if (raw.includes('/')) {
+                const parts = raw.split('/');
+                if (parts.length !== 2) return NaN;
+                const num = Number(parts[0]);
+                const den = Number(parts[1]);
+                if (isNaN(num) || isNaN(den) || den === 0) return NaN;
+                return num / den;
+            }
+            return Number(raw);
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('answer-input');
+            if (input.disabled) return;
+            const guess = parseAnswer(input.value);
+            if (isNaN(guess)) {
+                setMascot('sad');
+                setTimeout(() => setMascot('idle'), 900);
+                showFeedback(false, input.value.trim() === '' ? '🥺 Skriv dit svar først!' : '🥺 Det skal være et tal (eller en brøk som 3/4)!');
+                return;
+            }
+            const ans = currentProblem.answer;
+            const tol = 1e-9 * Math.max(1, Math.abs(ans));
+            if (Math.abs(guess - ans) <= tol) {
+                let expr;
+                if (currentProblem.problem.includes('= ?')) {
+                    const shown = currentProblem.answerText || formatNumber(ans);
+                    expr = currentProblem.problem.replace('= ?', '= ' + shown);
+                } else {
+                    expr = `${currentProblem.problem} = ${currentProblem.answerText || formatNumber(ans)}`;
+                }
+                showFeedback(true, `🎉 KORREKT! ${expr}`);
+                setMascot('happy');
+                spawnBurst();
+                input.disabled = true;
+                stats[activeModule].total++;
+                stats[activeModule][currentProblem.type]++;
+                renderStats();
+            } else {
+                setMascot('sad');
+                setTimeout(() => setMascot('idle'), 900);
+                showFeedback(false, '🥺 Næsten! Prøv igen!');
+            }
+        }
+
+        function renderStats() {
+            const cfg = statConfig[activeModule];
+            const bar = document.getElementById('stats');
+            bar.innerHTML = '';
+            cfg.keys.forEach((key, i) => {
+                const item = document.createElement('div');
+                item.className = 'stat-item';
+                const val = document.createElement('div');
+                val.className = 'stat-value';
+                val.textContent = stats[activeModule][key];
+                val.style.color = cfg.colors[i];
+                const lab = document.createElement('div');
+                lab.className = 'stat-label';
+                lab.textContent = cfg.labels[i];
+                item.appendChild(val);
+                item.appendChild(lab);
+                bar.appendChild(item);
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target && e.target.id === 'answer-input') {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                    e.preventDefault();
+                }
+                return;
+            }
+            if (e.target && e.target.tagName === 'BUTTON') return;
+            if (e.key === 'Enter' || e.key === ' ') {
+                showSolution();
+                e.preventDefault();
+            } else if (e.key === 'r' || e.key === 'R') {
+                generateProblem();
+                e.preventDefault();
+            }
+        });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
