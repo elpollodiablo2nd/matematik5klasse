@@ -543,6 +543,7 @@
         .overlay.visible { display: flex; animation: pop 0.2s ease; }
 
         .prize-card, .collection-card {
+            position: relative;
             background: var(--cream);
             border: 4px solid var(--plum);
             border-radius: 30px;
@@ -638,6 +639,31 @@
         }
 
         .collection-actions { display: flex; justify-content: center; }
+
+        .fx-bit {
+            position: absolute;
+            bottom: 45%;
+            font-size: 1.4rem;
+            pointer-events: none;
+            animation: fxFloat 1.3s ease-out forwards;
+        }
+
+        .fx-rainbow {
+            bottom: 55%;
+            font-size: 3rem;
+            animation: fxRainbow 1.7s ease-out forwards;
+        }
+
+        @keyframes fxFloat {
+            0% { opacity: 1; transform: translateY(0) scale(0.5) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(-130px) scale(1.4) rotate(35deg); }
+        }
+
+        @keyframes fxRainbow {
+            0% { opacity: 0; transform: scale(0.3); }
+            30% { opacity: 1; transform: scale(1.25); }
+            100% { opacity: 0; transform: translateY(-70px) scale(1); }
+        }
 
         @media (max-width: 640px) {
             body { padding-bottom: 10rem; }
@@ -1293,6 +1319,27 @@
             }
         }
 
+        function spawnFx(container) {
+            const bits = ['📦', '⭐', '📦', '✨', '⭐', '📦', '🎀', '⭐'];
+            bits.forEach((b) => {
+                const el = document.createElement('span');
+                el.className = 'fx-bit';
+                el.textContent = b;
+                el.style.left = (8 + Math.random() * 84) + '%';
+                el.style.animationDelay = (Math.random() * 0.3) + 's';
+                el.style.animationDuration = (1.1 + Math.random() * 0.7) + 's';
+                el.addEventListener('animationend', () => el.remove());
+                container.appendChild(el);
+            });
+            const rb = document.createElement('span');
+            rb.className = 'fx-bit fx-rainbow';
+            rb.textContent = '🌈';
+            rb.style.left = '50%';
+            rb.style.marginLeft = '-1.5rem';
+            rb.addEventListener('animationend', () => rb.remove());
+            container.appendChild(rb);
+        }
+
         function showFeedback(ok, msg) {
             const fb = document.getElementById('answer-feedback');
             fb.classList.remove('visible', 'correct', 'wrong');
@@ -1399,12 +1446,24 @@
             { id: 'kanin', label: 'Kanin', ears: 'long' },
             { id: 'kat', label: 'Kat', ears: 'pointy' },
             { id: 'frø', label: 'Frø', ears: 'bumps' },
-            { id: 'panda', label: 'Panda', ears: 'round', panda: true }
+            { id: 'panda', label: 'Panda', ears: 'round', panda: true },
+            { id: 'smør', label: 'Smør', ears: 'none', butter: true }
         ];
 
         const squishyColors = ['#FF9EC7', '#C9B8FF', '#9BE8C8', '#9CD2FF', '#FFD08A', '#FFA98A', '#F2A8E8', '#A8DFF0', '#FFC9A8', '#CDEFA8'];
 
         function squishySVG(t, color) {
+            if (t.butter) {
+                return `<svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">`
+                    + `<rect x="8" y="26" width="124" height="52" rx="18" fill="${color}" stroke="#6B4E71" stroke-width="4"/>`
+                    + `<rect x="16" y="32" width="108" height="12" rx="6" fill="#fff" opacity="0.45"/>`
+                    + `<path d="M48 50 q6 -8 12 0" stroke="#6B4E71" stroke-width="4" fill="none" stroke-linecap="round"/>`
+                    + `<path d="M80 50 q6 -8 12 0" stroke="#6B4E71" stroke-width="4" fill="none" stroke-linecap="round"/>`
+                    + `<ellipse cx="42" cy="58" rx="6" ry="4" fill="#FF8FB5" opacity="0.85"/><ellipse cx="98" cy="58" rx="6" ry="4" fill="#FF8FB5" opacity="0.85"/>`
+                    + `<path d="M62 58 q8 10 16 0 q-8 4 -16 0 z" fill="#8A4B6B"/>`
+                    + `<text x="70" y="74" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="10" letter-spacing="2" fill="#A8741A">SMØR</text>`
+                    + `</svg>`;
+            }
             let ears = '';
             if (t.ears === 'round') {
                 const earFill = t.panda ? '#6B4E71' : color;
@@ -1452,13 +1511,23 @@
         }
 
         function awardSquishy() {
-            const t = squishyTypes[Math.floor(Math.random() * squishyTypes.length)];
-            const color = squishyColors[Math.floor(Math.random() * squishyColors.length)];
+            const butter = squishyTypes.find((t) => t.butter);
+            let t, color;
+            if (Math.random() < 0.08) {
+                t = butter;
+                color = '#FFDE59';
+            } else {
+                const normal = squishyTypes.filter((x) => !x.butter);
+                t = normal[Math.floor(Math.random() * normal.length)];
+                color = squishyColors[Math.floor(Math.random() * squishyColors.length)];
+            }
             currentPrize = { type: t.id, label: t.label, color: color };
             const el = document.getElementById('prize-squishy');
             el.className = 'prize-squishy';
             el.innerHTML = squishySVG(t, color);
-            document.getElementById('prize-sub').textContent = `${correctTotal} rigtige svar — her er en ${t.label.toLowerCase()} i en flot farve! 🐾`;
+            document.getElementById('prize-sub').textContent = t.butter
+                ? `${correctTotal} rigtige svar — WOW, en SJÆLDEN smør-squishy! 🌈🧈`
+                : `${correctTotal} rigtige svar — her er en ${t.label.toLowerCase()} i en flot farve! 🐾`;
             document.getElementById('prize-hint').textContent = "Tryk på squishy'en for at klemme den 🥰";
             document.getElementById('prize-overlay').classList.add('visible');
             updatePrizeProgress();
@@ -1475,7 +1544,12 @@
             if (!currentPrize || el.classList.contains('squishing') || el.classList.contains('fly')) return;
             el.classList.add('squishing');
             spawnBurst();
-            document.getElementById('prize-hint').textContent = 'Squiish! 🥰';
+            if (currentPrize && squishyTypes.find((x) => x.id === currentPrize.type).butter) {
+                spawnFx(document.querySelector('.prize-card'));
+                document.getElementById('prize-hint').textContent = '🌈 Sjælden smør-squishy! Squiish! 🥰';
+            } else {
+                document.getElementById('prize-hint').textContent = 'Squiish! 🥰';
+            }
             setTimeout(() => {
                 el.classList.remove('squishing');
                 const btn = document.getElementById('collection-btn').getBoundingClientRect();
@@ -1516,6 +1590,7 @@
                     tile.classList.remove('squishing');
                     void tile.offsetWidth;
                     tile.classList.add('squishing');
+                    if (t.butter) spawnFx(document.querySelector('.collection-card'));
                 };
                 grid.appendChild(tile);
             });
